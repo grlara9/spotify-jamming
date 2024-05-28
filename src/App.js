@@ -61,6 +61,10 @@ function App () {
     const removeTrack = playlistTracks.filter((item) => track.id !== item.id)
     setPlaylistTracks(removeTrack)
   }
+
+  const updatePlaylistName = (name) =>{
+    setPlaylistName(name)
+  }
   
   
     return (
@@ -83,6 +87,7 @@ function App () {
             playlistName={playlistName} 
             playlistTracks={playlistTracks}
             onRemove={removeTrack}
+            onNameChange={updatePlaylistName}
             />}
           </div>
         </div>
