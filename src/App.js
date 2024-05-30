@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import Style from './App.module.css';
+import SearchBar from './Components/SearchBar/SearchBar'
 import SearchResults from './Components/SearchResult/SearchResults';
 import Playlist from './Components/Playlist/PlayList'
 function App () {
@@ -65,14 +66,23 @@ function App () {
   const updatePlaylistName = (name) =>{
     setPlaylistName(name)
   }
+
+  const savePlaylist = ()=>{
+    const trackURIs = playlistTracks.map((t) => t.uri);
+  }
   
+  const search =(search) =>{
+    console.log(search)
+  }
   
     return (
         <div>
         <h1>Ja<span className={Style.highlight}>mmm</span>ing</h1>
         <div className={Style.App}>
           {/* <!-- Add a SearchBar component --> */}
-          
+          <SearchBar 
+            onSearch={search}
+          />
           
             <div className={Style['App-playlist']}>
             {/* <!-- Add a SearchResults component --> */
@@ -88,6 +98,7 @@ function App () {
             playlistTracks={playlistTracks}
             onRemove={removeTrack}
             onNameChange={updatePlaylistName}
+            onSave={savePlaylist}
             />}
           </div>
         </div>
