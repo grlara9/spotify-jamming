@@ -3,6 +3,7 @@ import Style from './App.module.css';
 import SearchBar from './Components/SearchBar/SearchBar'
 import SearchResults from './Components/SearchResult/SearchResults';
 import Playlist from './Components/Playlist/PlayList'
+import { Spotify } from "./util/Spotify/Spotify";
 function App () {
   const [searchResults, setSearchResults] = useState([
     {
@@ -71,10 +72,10 @@ function App () {
     const trackURIs = playlistTracks.map((t) => t.uri);
   }
   
-  const search =(search) =>{
-    console.log(search)
-  }
-  
+ async function search(term) {
+      const results = await Spotify.search(term);
+      setSearchResults(results);
+    }
     return (
         <div>
         <h1>Ja<span className={Style.highlight}>mmm</span>ing</h1>
