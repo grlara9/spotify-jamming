@@ -52,11 +52,43 @@ const Spotify = {
                 };
             });
 	    }
-    }catch(error){
+    }
+    catch(error)
+    {
         console.log(error)
     }
-    }
+    },
 
+
+    savePlaylist(name, trackUris) {
+        if (!name || !trackUris) return;
+        const aToken = Spotify.getAccessToken();
+        const header = { Authorization: `Bearer ${aToken}` };
+        let userId;
+        return fetch(`${spotifyBaseUrl}/me`, { headers: header })
+          .then((response) => response.json())
+          .then((jsonResponse) => {
+            userId = jsonResponse.id;
+            let playlistId;
+            return fetch(`${spotifyBaseUrl}/users/${userId}/playlists`, {
+              headers: header,
+              method: "post",
+              body: JSON.stringify({ name: name }),
+            })
+              .then((response) => response.json())
+              .then((jsonResponse) => {
+                playlistId = jsonResponse.id;
+                return fetch(
+                  `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+                  {
+                    headers: header,
+                    method: "post",
+                    body: JSON.stringify({ uris: trackUris }),
+                  }
+                );
+              });
+          });
+      },
 
     }
 

@@ -5,32 +5,7 @@ import SearchResults from './Components/SearchResult/SearchResults';
 import Playlist from './Components/Playlist/PlayList'
 import { Spotify } from "./util/Spotify/Spotify";
 function App () {
-  const [searchResults, setSearchResults] = useState([
-    {
-    name: 'example track name1', 
-    artist: 'example track artist 1', 
-    album: 'example track album 1',
-    id: 1,
-    },
-    {
-      name: 'example track name2', 
-      artist: 'example track artist 2', 
-      album: 'example track album 2',
-      id: 2,
-    },
-    {
-      name: 'example track name3', 
-      artist: 'example track artist 3', 
-      album: 'example track album 3',
-      id: 3,
-    },
-    {
-      name: 'example track name4', 
-      artist: 'example track artist 3', 
-      album: 'example track album 3',
-      id: 4,
-    }
-  ])
+  const [searchResults, setSearchResults] = useState([])
 
   const [playlistName, setPlaylistName] = useState('Example Playlist Name')
   const [playlistTracks, setPlaylistTracks] = useState([
@@ -68,8 +43,12 @@ function App () {
     setPlaylistName(name)
   }
 
-  const savePlaylist = ()=>{
+  function savePlaylist() {
     const trackURIs = playlistTracks.map((t) => t.uri);
+    Spotify.savePlaylist(playlistName, trackURIs).then(() => {
+      updatePlaylistName("New Playlist");
+      setPlaylistTracks([]);
+    });
   }
   
  async function search(term) {
