@@ -1,7 +1,7 @@
 let accessToken;
 const client_id="9181e23e73054430b3196a89a7b64f80";
-const redirectUrl = "https://jamming-musicplayer.netlify.app";
 const spotifyBaseUrl = 'https://api.spotify.com/v1';
+const redirectUri = "https://jamming-musicplayer.netlify.app";
 
 
 const Spotify = {
@@ -27,7 +27,7 @@ const Spotify = {
       }
   
       // Third check for the access token if the first and second check are both false
-      const redirect = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUrl}`;
+      const redirect = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUri}`;
       window.location = redirect;
     },
    
