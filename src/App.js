@@ -1,33 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Style from './App.module.css';
 import SearchBar from './Components/SearchBar/SearchBar'
 import SearchResults from './Components/SearchResult/SearchResults';
 import Playlist from './Components/Playlist/PlayList'
 import { Spotify } from "./util/Spotify/Spotify";
 function App () {
-  const [searchResults, setSearchResults] = useState([])
 
-  const [playlistName, setPlaylistName] = useState('Example Playlist Name')
-  const [playlistTracks, setPlaylistTracks] = useState([
-    {
-      name: 'Example Playlist Name 1',
-      artist: 'Example Playlist Artist 1',
-      album: 'Example Playlist Album 1',
-      id: 34
-    },
-    {
-      name: 'Example Playlist Name 2',
-      artist: 'Example Playlist Artist 2',
-      album: 'Example Playlist Album 2',
-      id: 24
-    },
-    {
-      name: 'Example Playlist Name 3',
-      artist: 'Example Playlist Artist 3',
-      album: 'Example Playlist Album 3',
-      id: 35
-    }
-  ])
+  const [searchResults, setSearchResults] = useState([])
+  const [playlistName, setPlaylistName] = useState('New Playlist')
+  const [playlistTracks, setPlaylistTracks] = useState([])
+  const [accessToken, setAccessToken] = useState(null)
+
+  useEffect(()=>{
+    const token = Spotify.getAccessToken();
+    setAccessToken(token);
+  }, []);
 
   const addTrack = (track) =>{
     const existingTrack = playlistTracks.some(item => track.id === item.id )
@@ -44,20 +31,25 @@ function App () {
   }
 
   function savePlaylist() {
-    const trackURIs = playlistTracks.map((t) => t.uri);
+    const trackURIs = playlistTracks.map(track => track.uri);
     Spotify.savePlaylist(playlistName, trackURIs).then(() => {
-      updatePlaylistName("New Playlist");
+      setPlaylistName('New Playlist');
       setPlaylistTracks([]);
     });
   }
   
- async function search(term) {
-      const results = await Spotify.search(term);
-      setSearchResults(results);
-    }
+  const search = (term) => {
+    Spotify.search(term).then((result) => setSearchResults(result));
+    
+  }
     return (
         <div>
         <h1>Ja<span className={Style.highlight}>mmm</span>ing</h1>
+        {!accessToken ? (
+        <a href={`https://accounts.spotify.com/authorize?client_id=${Spotify.clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${Spotify.redirectUri}`}>
+          Login to Spotify
+        </a>
+      ) : (
         <div className={Style.App}>
           {/* <!-- Add a SearchBar component --> */}
           <SearchBar 
@@ -66,10 +58,7 @@ function App () {
           
             <div className={Style['App-playlist']}>
             {/* <!-- Add a SearchResults component --> */
-            <SearchResults 
-            userSearchResults={searchResults} 
-            onAdd={addTrack}
-            />
+           <SearchResults searchResults={searchResults} onAdd={addTrack} />
             }
             
             {/* <!-- Add a Playlist component --> */}
@@ -82,8 +71,9 @@ function App () {
             />}
           </div>
         </div>
+        )};
       </div>
-        );
+    );
 }
 
 export default App;
